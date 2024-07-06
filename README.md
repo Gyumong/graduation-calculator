@@ -68,13 +68,7 @@ root/
     yarn test
     ```
 
-## 테스트 실행
 
-테스트를 실행하려면 다음 명령어를 사용하세요:
-
-```sh
-yarn test
-```
 
 ### Demo
 https://github.com/Gyumong/graduation-calculator/assets/60845910/1ab22d1a-3d0c-46dc-883c-43fcaa94b6b8
