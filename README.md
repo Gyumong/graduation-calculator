@@ -21,6 +21,29 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 교내 포털을 크롤링하여 제공 이후 추가 개발 예정
 
 
+## 폴더 구조
+```
+root/
+├── app/
+│   ├── api/
+│   │   ├── startScrape/
+│   │   │   └── route.js
+│   │   ├── taskStatus/
+│   │   │   └── route.js
+│   ├── page.tsx
+├── lib/
+│   ├── cache.js
+│   ├── tasks.js
+├── tests/
+│   ├── api.test.js
+├── .env.test.example
+├── .gitignore
+├── package.json
+├── tasks.json
+├── vitest.config.js
+```
+
+
 ## 테스트 환경 설정
 
 테스트 환경을 설정하려면 다음 단계를 따르세요:
