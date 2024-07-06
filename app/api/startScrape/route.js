@@ -5,6 +5,14 @@ import { execFile } from 'child_process';
 import path from 'path';
 import { setTask, getTasks } from '/lib/tasks'
 
+/**
+ *
+ * @param req
+ * @returns {Promise<NextResponse<{error: string}>|NextResponse<{taskId: (`${string}-${string}-${string}-${string}-${string}`|*|string)}>>}
+ * @description 사용자가 제공한 학번과 비밀번호를 받아서 포털 사이트에서 강의 정보를 크롤링하고, 작업 ID를 반환합니다.
+ *
+ */
+
 export async function POST(req) {
     const { username, password } = await req.json();
 
