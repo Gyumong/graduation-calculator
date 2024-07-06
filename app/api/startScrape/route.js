@@ -1,9 +1,9 @@
+// pages/api/startScrape.js
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { execFile } from 'child_process';
 import path from 'path';
-
-const tasks = {};
+import { setTask, getTasks } from '/lib/tasks'
 
 export async function POST(req) {
     const { username, password } = await req.json();
@@ -13,7 +13,8 @@ export async function POST(req) {
     }
 
     const taskId = uuidv4();
-    tasks[taskId] = { status: 'in-progress', data: null };
+    setTask(taskId, { status: 'in-progress', data: null });
+    console.log('@@tasks', getTasks());
 
     const scriptPath = path.resolve('scrape_suwon_portal.py');
     console.log(`Executing script: ${scriptPath}`);
@@ -21,12 +22,12 @@ export async function POST(req) {
     execFile('python3', [scriptPath, username, password], (error, stdout, stderr) => {
         if (error) {
             console.error('Exec error:', error);
-            tasks[taskId] = { status: 'failed', data: null };
+            setTask(taskId, { status: 'failed', data: null });
             return;
         }
         if (stderr) {
             console.error('Stderr:', stderr);
-            tasks[taskId] = { status: 'failed', data: null };
+            setTask(taskId, { status: 'failed', data: null });
             return;
         }
 
@@ -65,14 +66,12 @@ export async function POST(req) {
                 courses: groupedData[key]
             }));
 
-            tasks[taskId] = { status: 'completed', data: formattedData };
+            setTask(taskId, { status: 'completed', data: formattedData });
         } catch (parseError) {
             console.error('Parse error:', parseError);
-            tasks[taskId] = { status: 'failed', data: null };
+            setTask(taskId, { status: 'failed', data: null });
         }
     });
 
     return NextResponse.json({ taskId }, { status: 202 });
 }
-
-export { tasks };

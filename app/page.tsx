@@ -22,18 +22,28 @@ const fetchScrapingData = async (username, password) => {
   const data = await response.json();
   const taskId = data.taskId;
 
-  // Polling for task status
+  const maxRetries = 3;
+  let attempts = 0;
   let taskStatusResponse;
+
   do {
     await new Promise(resolve => setTimeout(resolve, 2000)); // wait for 2 seconds
-    taskStatusResponse = await fetch(`/api/taskStatus?taskId=${taskId}`);
-    const taskData = await taskStatusResponse.json();
-    if (taskData.status === 'completed') {
-      return taskData.data;
-    } else if (taskData.status === 'failed') {
-      throw new Error('Task failed.');
+    try {
+      taskStatusResponse = await fetch(`/api/taskStatus?taskId=${taskId}`);
+      const taskData = await taskStatusResponse.json();
+      if (taskData.status === 'completed') {
+        return taskData.data;
+      } else if (taskData.status === 'failed') {
+        throw new Error('Task failed.');
+      }
+    } catch (error) {
+      attempts++;
+      if (attempts >= maxRetries) {
+        throw new Error('Task polling failed after maximum retries.');
+      }
+      console.log(`Retry attempt ${attempts} failed`);
     }
-  } while (taskStatusResponse.status === 200);
+  } while (attempts < maxRetries);
 
   throw new Error('Task polling failed.');
 };
